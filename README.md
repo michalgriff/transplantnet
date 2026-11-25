@@ -10,3 +10,10 @@ Organ transplantation faces a shortage of available organs and requires effectiv
 - **Central Server:** Manages organ inventory, recipient requests, matching, and notifications.
 - **Harvest Center Client:** Registers available organs with the central server.
 - **Hospital Client:** Submits recipient requests and receives matching notifications.
+
+### Team Members
+- Ashton Blankenship
+- Ben Danso
+- Dalal Alsaedi
+- Ireh Jeon
+- Michal Griffith
