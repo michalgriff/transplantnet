@@ -36,6 +36,14 @@ class TransplantService(rpyc.Service):
             return "Error: Blood type must be O, A, B, or AB. "
 
         with lock:
+
+            for organ in organs:
+                if (
+                    organ["donor_id"] == donor_id
+                    and organ["organ_type"] == organ_type
+                ):
+                    return "Error: Organ already registered."
+
             organ = {
                 "organ_type": organ_type,
                 "blood_type": blood_type,
@@ -46,10 +54,15 @@ class TransplantService(rpyc.Service):
 
             organs.append(organ)
 
+            available = sum(
+                o["status"] == "available" for o in organs
+            )
+
+
             return (
                 f"Organ registered: {organ_type} ({blood_type}) "
                 f"from Donor {donor_id} - {harvest_center}. "
-                f"Total organs available: {len(organs)}"
+                f"Total organs available: {available}"
             )
 
     def exposed_register_patient(
@@ -71,12 +84,16 @@ class TransplantService(rpyc.Service):
             }
 
             patients.append(patient)
+            
+            waiting = sum(
+                p["status"] == "waiting" for p in patients
+            )
 
             return (
                 f"Patient registered: {patient_id} needs {organ_needed} "
                 f"({blood_type}), urgency level {urgency}, "
                 f"from {hospital_name}. "
-                f"Total patients waiting: {len(patients)}"
+                f"Total patients waiting: {waiting}"
             )
 
 
