@@ -10,7 +10,7 @@ try:
     patient_id = input("Enter patient ID: ")
     organ_needed = input("Enter organ needed: ")
     blood_type = input("Enter blood type: ")
-    urgency = int(input("Enter urgency level (1-10): "))
+    urgency = int(input("Enter urgency level (1-6): "))
     hospital_name = input("Enter hospital name: ")
 
     result = conn.root.register_patient(
