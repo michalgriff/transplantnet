@@ -33,7 +33,7 @@ class TransplantService(rpyc.Service):
         if organ_type not in {"kidney", "liver", "heart", "lung"}: 
             return "Error: Organ type not valid. "
         if blood_type not in {"O", "A", "B", "AB"}:
-            return "Error: Blood type must be O, A, B, or AB. "
+            return "Error: Blood type must be entered as O, A, B, or AB. "
 
         with lock:
 
