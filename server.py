@@ -119,13 +119,22 @@ class TransplantService(rpyc.Service):
                 f"from {hospital_name}. "
                 f"Total patients waiting: {waiting}"
             )
-
+    def exposed_get_organs(self):
+        with lock:
+            return [
+                organ.copy() for organ in organs
+                if organ["status"] == "available"
+            ]
+        
     def exposed_get_patients(self):
         with lock:
             return [
                 patient.copy() for patient in patients
                 if patient["status"] == "waiting"
             ]
+    def exposed_get_matches(self):
+        with lock:
+            return [match.copy() for match in matches]
 if __name__ == "__main__":
     server = ThreadedServer(
         TransplantService,
