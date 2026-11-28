@@ -120,7 +120,12 @@ class TransplantService(rpyc.Service):
                 f"Total patients waiting: {waiting}"
             )
 
-
+    def exposed_get_patients(self):
+        with lock:
+            return [
+                patient.copy() for patient in patients
+                if patient["status"] == "waiting"
+            ]
 if __name__ == "__main__":
     server = ThreadedServer(
         TransplantService,
