@@ -73,8 +73,32 @@ class TransplantService(rpyc.Service):
         urgency,
         hospital_name
     ):
+        if not all(isinstance(value, str) for value in (
+            patient_id, organ_needed, blood_type, hospital_name
+        )):
+            return "Error: Registration fields must be text."
+
+        patient_id = patient_id.strip()
+        organ_needed = organ_needed.strip().lower()
+        blood_type = blood_type.strip().upper()
+        hospital_name = hospital_name.strip()
+
+        if not hospital_name:
+            return "Error: Enter hospital name."
+        if not patient_id:
+            return "Error: Enter a patient ID."
+        if organ_needed not in {"kidney", "liver", "heart", "lung"}:
+            return "Error: Organ type not valid."
+        if blood_type not in {"O", "A", "B", "AB"}:
+            return "Error: Blood type must be O, A, B, or AB."
+        if type(urgency) is not int or not 1 <= urgency <= 6:
+            return "Error: Urgency must be between 1 and 6."
+        
         with lock:
-            patient = {
+             for patient in patients:
+                if patient["patient_id"] == patient_id:
+                    return "Error: Patient already registered."
+        patient = {
                 "patient_id": patient_id,
                 "organ_needed": organ_needed,
                 "blood_type": blood_type,
@@ -83,13 +107,13 @@ class TransplantService(rpyc.Service):
                 "status": "waiting"
             }
 
-            patients.append(patient)
+        patients.append(patient)
             
-            waiting = sum(
+        waiting = sum(
                 p["status"] == "waiting" for p in patients
             )
 
-            return (
+        return (
                 f"Patient registered: {patient_id} needs {organ_needed} "
                 f"({blood_type}), urgency level {urgency}, "
                 f"from {hospital_name}. "
